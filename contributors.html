@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI_AITM — Contributors</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preload" as="image" href="aitm.png">
+  <style>
+    :root {
+      --bg-primary: #0f0f1a;
+      --bg-secondary: #1a1a2e;
+      --accent: #6c5ce7;
+      --accent-glow: rgba(108, 92, 231, 0.2);
+      --text: #f8f9fa;
+      --text-muted: #adb5bd;
+      --danger: #ff6b6b;
+      --success: #55efc4;
+      --card-bg: rgba(30, 30, 50, 0.7);
+      --border: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: linear-gradient(135deg, var(--bg-primary), #16213e);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      padding: 20px;
+      overflow-x: hidden;
+    }
+
+    .login-container {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 40px;
+      width: 100%;
+      max-width: 850px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3),
+                  0 0 20px var(--accent-glow);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-container::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, transparent 20%, var(--bg-secondary) 200%);
+      z-index: -1;
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .brand h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(90deg, #a29bfe, #55efc4);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+
+    .back-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+      width: fit-content;
+    }
+
+    .back-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: var(--text);
+    }
+
+    .contributors-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      margin-top: 40px;
+    }
+
+    .contributor-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      width: 280px;
+      position: relative;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none; /* For link wrapper */
+    }
+
+    .contributor-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 20px;
+      padding: 2px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+
+    .contributor-card:hover {
+      transform: translateY(-10px) scale(1.02);
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4), 
+                  0 0 20px var(--accent-glow);
+      border-color: var(--accent);
+    }
+
+    .contributor-img-wrapper {
+      width: 100px;
+      height: 100px;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    
+    .contributor-img-wrapper i {
+      font-size: 4rem;
+      line-height: 100px;
+      z-index: 2;
+      position: relative;
+      transition: transform 0.4s ease;
+    }
+
+    .contributor-img-wrapper::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 80px;
+      background: var(--accent);
+      filter: blur(30px);
+      opacity: 0.3;
+      border-radius: 50%;
+      transition: opacity 0.4s ease;
+    }
+
+    .contributor-card:hover .contributor-img-wrapper i {
+      transform: scale(1.1);
+    }
+    
+    .contributor-card:hover .contributor-img-wrapper::after {
+      opacity: 0.6;
+    }
+
+    .contributor-name {
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 8px;
+        color: var(--text);
+        letter-spacing: 0.5px;
+    }
+    
+    .contributor-role {
+        font-size: 0.9rem;
+        color: var(--accent);
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        opacity: 0.9;
+    }
+    
+    .view-profile {
+      margin-top: 20px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+    }
+    
+    .contributor-card:hover .view-profile {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+    /* Loading Overlay CSS */
+    #loadingOverlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 15, 26, 0.95);
+      backdrop-filter: blur(15px);
+      z-index: 9999;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loading-text-wrapper {
+      display: flex;
+      gap: 5px; /* Space between letters */
+      flex-wrap: wrap;
+      justify-content: center;
+      padding: 0 20px;
+    }
+
+    .loading-char {
+      display: inline-block;
+      color: var(--accent);
+      font-size: 5rem;
+      font-weight: 800;
+      text-shadow: 0 0 20px var(--accent-glow);
+      opacity: 0;
+      transform: translateY(-100vh);
+      /* Animation will be set via JS to handle complex timing */
+      position: relative; 
+      transform-origin: 50% -100px; /* Simulate pivot point high up */
+    }
+
+    /* The Thread */
+    .loading-char::before {
+      content: '';
+      position: absolute;
+      bottom: 50%; /* Start from middle of letter */
+      left: 50%;
+      width: 1px;
+      height: 100vh; /* Long enough to reach top */
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateX(-50%);
+      z-index: -1;
+    }
+    
+    .loading-char.space {
+      width: 1rem;
+    }
+    
+    /* Hide thread for space characters */
+    .loading-char.space::before {
+      display: none;
+    }
+
+    @keyframes dropLetter {
+      0% {
+        opacity: 0;
+        transform: translateY(-100vh) rotate(-5deg);
+      }
+      60% {
+        opacity: 1;
+        transform: translateY(10px) rotate(3deg);
+      }
+      80% {
+        transform: translateY(-5px) rotate(-2deg);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) rotate(0);
+      }
+    }
+
+    @keyframes sway {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(3deg); }
+      75% { transform: rotate(-3deg); }
+      100% { transform: rotate(0deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <button class="back-btn" onclick="window.location.href='index.html'">
+      <i class="fas fa-arrow-left"></i> Back to Login
+    </button>
+
+    <div class="brand">
+      <h1>Contributors</h1>
+      <p>The minds behind AI_AITM</p>
+    </div>
+
+    <div class="contributors-list">
+      <!-- Contributor 1 -->
+      <a href="portfolio1.html" class="contributor-card">
+        <div class="contributor-img-wrapper">
+          <i class="fas fa-code" style="color: var(--success);"></i>
+        </div>
+        <div class="contributor-name">Anish T. Inamadar</div>
+        <div class="contributor-role">Frontend & Database</div>
+        <div class="view-profile">View Portfolio <i class="fas fa-arrow-right"></i></div>
+      </a>
+      
+      <!-- Contributor 2 -->
+      <a href="portfolio2.html" class="contributor-card">
+        <div class="contributor-img-wrapper">
+          <i class="fas fa-brain" style="color: var(--accent);"></i>
+        </div>
+        <div class="contributor-name">Kiran B. Nandani</div>
+        <div class="contributor-role">AIML & Core Coder</div>
+        <div class="view-profile">View Portfolio <i class="fas fa-arrow-right"></i></div>
+      </a>
+    </div>
+
+    <div class="footer">
+      <p><i class="far fa-copyright"></i> 2025 AI_AITM. All rights reserved.</p>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay">
+    <div class="loading-text-wrapper" id="loadingTextWrapper"></div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const cards = document.querySelectorAll('.contributor-card');
+      const overlay = document.getElementById('loadingOverlay');
+      const wrapper = document.getElementById('loadingTextWrapper');
+
+      cards.forEach(card => {
+        card.addEventListener('click', function(e) {
+          e.preventDefault();
+          const targetUrl = this.getAttribute('href');
+          const role = this.querySelector('.contributor-role').textContent.trim();
+          
+          // Clear previous text
+          wrapper.innerHTML = '';
+          overlay.style.display = 'flex';
+          
+          // Generate spans for specific characters
+          [...role].forEach((char, index) => {
+            const span = document.createElement('span');
+            span.textContent = char;
+            span.className = char === ' ' ? 'loading-char space' : 'loading-char';
+            
+            // Delays
+            const dropDelay = index * 80;
+            const swayDelay = dropDelay + 800; // Wait for drop (0.8s) to finish
+            
+            // Apply dual animations: drop first, then continuous sway
+            span.style.animationName = 'dropLetter, sway';
+            span.style.animationDuration = '0.8s, 3s';
+            span.style.animationDelay = `${dropDelay}ms, ${swayDelay}ms`;
+            span.style.animationTimingFunction = 'cubic-bezier(0.25, 1, 0.5, 1), ease-in-out';
+            span.style.animationIterationCount = '1, infinite';
+            span.style.animationFillMode = 'forwards, none'; // forwards for drop needed? actually sway takes over
+            
+            wrapper.appendChild(span);
+          });
+          
+          // Total animation time calculation (approx) + buffer
+          const totalDuration = (role.length * 80) + 2000; 
+          
+          setTimeout(() => {
+            window.location.href = targetUrl;
+          }, Math.max(3000, totalDuration)); 
+        });
+      });
+    });
+  </script>
+</body>
+</html>

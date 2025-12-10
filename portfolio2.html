@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kiran B Nandani | AI & Data Science Engineer</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+  
+  <style>
+    :root {
+      --bg: #050505;
+      --accent: #00f260; /* Neon Green */
+      --secondary: #0575E6; /* Electric Blue */
+      --text: #e0e0ff;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Fira Code', monospace;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #000;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 4px;
+    }
+
+    #three-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      padding: 10px 20px;
+      background: rgba(0,0,0,0.7);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: bold;
+      z-index: 100;
+      backdrop-filter: blur(5px);
+      transition: all 0.3s;
+      clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+    }
+
+    .back-btn:hover {
+      background: var(--accent);
+      color: #000;
+      transform: scale(1.05);
+    }
+
+    /* Hero Section */
+    header {
+      min-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .profile-glow {
+      position: relative;
+      width: 280px;
+      height: 280px;
+      margin-bottom: 2rem;
+    }
+
+    .profile {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      background: #111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 6rem;
+      color: var(--accent);
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 0 50px rgba(0, 242, 96, 0.2);
+      overflow: hidden; /* Ensure image stays circular */
+    }
+
+    .profile-ring {
+      position: absolute;
+      top: -10px;
+      left: -10px;
+      right: -10px;
+      bottom: -10px;
+      border: 2px dashed var(--secondary);
+      border-radius: 50%;
+      animation: spin 10s linear infinite;
+    }
+
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    /* Glitch Title */
+    .glitch-wrapper {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 4rem;
+      font-weight: 900;
+      color: #fff;
+      text-transform: uppercase;
+      position: relative;
+      text-shadow: 0 0 10px rgba(0, 242, 96, 0.5);
+    }
+
+    .glitch-text::before,
+    .glitch-text::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .glitch-text::before {
+      left: 2px;
+      text-shadow: -1px 0 #ff00c1;
+      clip: rect(44px, 450px, 56px, 0);
+      animation: glitch-anim 5s infinite linear alternate-reverse;
+    }
+
+    .glitch-text::after {
+      left: -2px;
+      text-shadow: -1px 0 #00fff9;
+      clip: rect(44px, 450px, 56px, 0);
+      animation: glitch-anim2 5s infinite linear alternate-reverse;
+    }
+
+    @keyframes glitch-anim {
+      0% { clip: rect(30px, 9999px, 10px, 0); }
+      20% { clip: rect(85px, 9999px, 90px, 0); }
+      40% { clip: rect(10px, 9999px, 50px, 0); }
+      60% { clip: rect(60px, 9999px, 20px, 0); }
+      80% { clip: rect(20px, 9999px, 80px, 0); }
+      100% { clip: rect(50px, 9999px, 30px, 0); }
+    }
+    @keyframes glitch-anim2 {
+      0% { clip: rect(10px, 9999px, 80px, 0); }
+      20% { clip: rect(50px, 9999px, 60px, 0); }
+      40% { clip: rect(80px, 9999px, 10px, 0); }
+      60% { clip: rect(20px, 9999px, 50px, 0); }
+      80% { clip: rect(70px, 9999px, 20px, 0); }
+      100% { clip: rect(40px, 9999px, 90px, 0); }
+    }
+
+    .subtitle {
+      font-size: 1.5rem;
+      color: var(--secondary);
+      margin-bottom: 2rem;
+      min-height: 1.6em; /* Prevent layout shift during typing */
+    }
+
+    /* Sections */
+    section {
+      padding: 6rem 0;
+    }
+
+    .section-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2.5rem;
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      color: #fff;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 50px;
+      height: 4px;
+      background: var(--accent);
+      box-shadow: 0 0 10px var(--accent);
+    }
+
+    /* Glass Cards */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 2.5rem;
+    }
+
+    .project-card {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      padding: 2rem;
+      border-radius: 15px;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.4s ease;
+      backdrop-filter: blur(10px);
+      /* Ensure visibility if JS fails, but we'll control it with GSAP */
+      opacity: 1; 
+      text-decoration: none;
+      display: block;
+    }
+
+    .project-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 30px rgba(0, 242, 96, 0.2);
+      transform: translateY(-10px) scale(1.02);
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      transform: translateX(-100%);
+      transition: 0.5s;
+    }
+
+    .project-card:hover::before {
+      transform: translateX(100%);
+    }
+
+    .project-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .project-tech {
+      color: var(--accent);
+      font-size: 0.85rem;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Skills */
+    .skills-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+    }
+
+    .skill-tag {
+      padding: 0.8rem 1.5rem;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--secondary);
+      color: var(--secondary);
+      border-radius: 4px;
+      font-weight: bold;
+      transition: all 0.3s;
+      cursor: default;
+      clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
+    }
+
+    .skill-tag:hover {
+      background: var(--secondary);
+      color: #fff;
+      box-shadow: 0 0 20px rgba(5, 117, 230, 0.4);
+      transform: scale(1.1);
+    }
+
+    /* Contact */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+    }
+
+    .contact-card {
+      background: var(--glass);
+      padding: 2rem;
+      text-align: center;
+      border-radius: 10px;
+      border: 1px solid var(--glass-border);
+      transition: all 0.3s;
+    }
+
+    .contact-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--accent);
+    }
+
+    .contact-card i {
+      font-size: 3rem; /* Larger icons */
+      color: var(--accent);
+      transition: transform 0.3s, text-shadow 0.3s;
+    }
+    
+    .contact-card:hover i {
+      transform: scale(1.2);
+      text-shadow: 0 0 20px var(--accent);
+    }
+
+    @media (max-width: 768px) {
+      h1 { font-size: 2.5rem; }
+      .section-title { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="three-canvas"></canvas>
+  
+  <a href="contributors.html" class="back-btn">
+    <i class="fas fa-arrow-left"></i> RETURN
+  </a>
+
+  <div class="container">
+    <header class="hero-section">
+      <div class="profile-glow">
+        <div class="profile-ring"></div>
+        <div class="profile">
+          <img src="kiran.jpg" alt="Kiran B Nandani" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+      </div>
+      
+      <div class="glitch-wrapper">
+        <h1 class="glitch-text" data-text="Kiran B Nandani">Kiran B Nandani</h1>
+      </div>
+      
+      <div class="subtitle" id="typing-text"></div>
+      
+      <div style="margin-top: 3rem; opacity: 0;" class="scroll-indicator">
+        <i class="fas fa-chevron-down" style="font-size: 2rem; color: var(--accent); animation: bounce 2s infinite;"></i>
+      </div>
+    </header>
+
+    <section id="about" class="gsap-reveal">
+      <h2 class="section-title">SYSTEM STATUS: ONLINE</h2>
+      <div style="background: rgba(0,0,0,0.4); padding: 2rem; border-left: 4px solid var(--secondary); backdrop-filter: blur(5px);">
+        <p style="font-size: 1.1rem; max-width: 800px;">
+          > Initializing Profile...<br>
+          > Subject: AI & Data Science Engineer.<br>
+          > Origin: Angadi Institute of Technology & Management.<br><br>
+          Passionate archtect of intelligent systems. Specializing in <strong>Deep Learning</strong>, <strong>Generative AI</strong>, and <strong>Full-Stack Architectures</strong>. 
+          Dedicated to pushing the boundaries of what code can achieve.
+        </p>
+      </div>
+    </section>
+
+    <section id="projects">
+      <h2 class="section-title">DEPLOYED MODULES</h2>
+      <div class="projects-grid">
+        <a href="#" class="project-card gsap-card">
+          <div class="project-title">Deepfake Detection</div>
+          <div class="project-tech">CNN // Python // Django</div>
+          <p class="project-desc">Advanced multimedia forensic system utilizing Convolutional Neural Networks to identify synthetic media manipulation with high accuracy.</p>
+        </a>
+        <a href="#" class="project-card gsap-card">
+          <div class="project-title">WeTalk Protocol</div>
+          <div class="project-tech">NLP // REST API // JS</div>
+          <p class="project-desc">Real-time multilingual communication bridge featuring automated speech-to-text transcription and semantic analysis.</p>
+        </a>
+        <a href="#" class="project-card gsap-card">
+          <div class="project-title">REVA Assistant</div>
+          <div class="project-tech">Voice AI // Automation</div>
+          <p class="project-desc">Autonomous virtual agent capable of executing system tasks via voice commands and managing data streams.</p>
+        </a>
+        <a href="#" class="project-card gsap-card">
+          <div class="project-title">Vencer Core</div>
+          <div class="project-tech">Firebase // React Logic</div>
+          <p class="project-desc">Centralized event management hub deployed for high-traffic handling during major technical summits.</p>
+        </a>
+      </div>
+    </section>
+
+    <section id="skills" class="gsap-reveal">
+      <h2 class="section-title">NEURAL CAPABILITIES</h2>
+      <div class="skills-container">
+        <span class="skill-tag">Python Core</span>
+        <span class="skill-tag">TensorFlow</span>
+        <span class="skill-tag">PyTorch</span>
+        <span class="skill-tag">Neural Networks</span>
+        <span class="skill-tag">Computer Vision</span>
+        <span class="skill-tag">Django Framework</span>
+        <span class="skill-tag">React.js</span>
+        <span class="skill-tag">Cloud Infrastructure</span>
+        <span class="skill-tag">Data Visualization</span>
+      </div>
+    </section>
+
+    <section id="contact" class="gsap-reveal">
+      <h2 class="section-title">ESTABLISH UPLINK</h2>
+      <div class="contact-grid" style="display: flex; justify-content: center; gap: 2rem;">
+        <a href="mailto:basavaraj.nandani421@gmail.com" class="contact-card" title="Email">
+          <i class="fas fa-envelope-open-text"></i>
+        </a>
+        <a href="https://linkedin.com/in/kiran-nandani" class="contact-card" title="LinkedIn" target="_blank">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+        <a href="https://github.com/Kiran400-afk" class="contact-card" title="GitHub" target="_blank">
+          <i class="fab fa-github-alt"></i>
+        </a>
+      </div>
+      
+      <div style="text-align: center; margin-top: 2rem; font-family: 'Orbitron', sans-serif;">
+        <span style="color: var(--secondary); font-size: 1.2rem; display: inline-flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.3); padding: 10px 20px; border-radius: 30px; border: 1px solid var(--glass-border);">
+          <i class="fas fa-phone-alt" style="color: var(--accent);"></i> +91 99029 95502
+        </span>
+      </div>
+    </section>
+    </section>
+
+    <footer style="margin-top: 4rem; text-align: center; color: var(--glass-border); font-size: 0.8rem;">
+      <p>SYSTEM END OF LINE // 2025</p>
+    </footer>
+  </div>
+
+  <script>
+    // --- typing effect ---
+    const textToType = "AI & Data Science Engineer";
+    const typeContainer = document.getElementById('typing-text');
+    let typeIndex = 0;
+
+    function typeWriter() {
+      if (typeIndex < textToType.length) {
+        typeContainer.innerHTML += textToType.charAt(typeIndex);
+        typeIndex++;
+        setTimeout(typeWriter, 100);
+      } else {
+        // Blink cursor effect at end
+        typeContainer.innerHTML += '<span style="animation:blink 1s infinite">_</span>';
+      }
+    }
+    
+    // Start typing after a slight delay
+    setTimeout(typeWriter, 1000);
+
+    // --- Three.js Background with 3D Model Logic ---
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x050505, 0.02); // Add fog for depth
+
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-canvas'), alpha: true, antialias: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+
+    // Create a ""Neural Core"" (Icosahedron Wireframe)
+    const geometry = new THREE.IcosahedronGeometry(10, 2);
+    const wireframe = new THREE.WireframeGeometry(geometry);
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x00f260, transparent: true, opacity: 0.15 });
+    const sphere = new THREE.LineSegments(wireframe, lineMaterial);
+    scene.add(sphere);
+
+    // Inner Core
+    const coreGeo = new THREE.IcosahedronGeometry(4, 0);
+    const coreMat = new THREE.MeshBasicMaterial({ color: 0x0575E6, wireframe: true, transparent: true, opacity: 0.5 });
+    const core = new THREE.Mesh(coreGeo, coreMat);
+    scene.add(core);
+
+    // Particles fitting the theme
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particleCount = 1000;
+    const posArray = new Float32Array(particleCount * 3);
+
+    for (let i = 0; i < particleCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 100; // Spread out
+    }
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particlesMaterial = new THREE.PointsMaterial({ size: 0.1, color: 0xffffff });
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particlesMesh);
+
+    camera.position.z = 30;
+
+    // Mouse Interaction
+    let mouseX = 0;
+    let mouseY = 0;
+    
+    document.addEventListener('mousemove', (event) => {
+        mouseX = event.clientX / window.innerWidth - 0.5;
+        mouseY = event.clientY / window.innerHeight - 0.5;
+    });
+
+    const animate = () => {
+        requestAnimationFrame(animate);
+
+        // Rotate Objects
+        sphere.rotation.y += 0.002;
+        sphere.rotation.x += 0.001;
+        core.rotation.y -= 0.01;
+        core.rotation.x -= 0.005;
+        
+        particlesMesh.rotation.y = -mouseX * 0.5;
+        particlesMesh.rotation.x = -mouseY * 0.5;
+
+        // Subtle camera swaying
+        camera.position.x += (mouseX * 5 - camera.position.x) * 0.05;
+        camera.position.y += (-mouseY * 5 - camera.position.y) * 0.05;
+        camera.lookAt(scene.position);
+
+        renderer.render(scene, camera);
+    };
+
+    animate();
+
+    // Resize Handler
+    window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    // --- GSAP Animations (Zoom In / Scroll Effects) ---
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Zoom In effect for Hero
+    gsap.from(".hero-section", {
+        scale: 0.8,
+        opacity: 0,
+        duration: 1.5,
+        ease: "power4.out"
+    });
+    
+    gsap.to(".scroll-indicator", {
+        opacity: 1,
+        delay: 2,
+        duration: 1
+    });
+
+    // Animate Sections Zoom In
+    gsap.utils.toArray(".gsap-reveal").forEach(section => {
+        gsap.from(section, {
+            scrollTrigger: {
+                trigger: section,
+                start: "top 80%",
+                toggleActions: "play none none reverse"
+            },
+            y: 50,
+            opacity: 0,
+            scale: 0.95,
+            duration: 1,
+            ease: "power2.out"
+        });
+    });
+
+    // Staggered Cards Zoom Animation - HIDDEN FOR DEBUGGING VISIBILITY
+    /*
+    gsap.from(".gsap-card", {
+        scrollTrigger: {
+            trigger: "#projects",
+            start: "top 85%"
+        },
+        y: 100,
+        opacity: 0,
+        scale: 0.8,
+        duration: 0.8,
+        stagger: 0.2, 
+        ease: "back.out(1.7)"
+    });
+    */
+
+    // Three.js Camera Zoom on Scroll
+    ScrollTrigger.create({
+        trigger: "body",
+        start: "top top",
+        end: "bottom bottom",
+        onUpdate: (self) => {
+            // Move camera closer as we scroll down
+            const moveZ = 30 - (self.progress * 15); 
+            gsap.to(camera.position, {
+                z: moveZ,
+                duration: 1,
+                overwrite: true
+            });
+        }
+    });
+
+  </script>
+</body>
+</html>

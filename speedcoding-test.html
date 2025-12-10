@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI_AITM Portal — Create Speed Coding Test</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  
+  <style>
+    :root {
+      --bg-dark: #05050a;
+      --bg-panel: #0f0f1a;
+      --bg-card: rgba(20, 20, 35, 0.6);
+      --primary: #00f3ff;
+      --secondary: #bc13fe;
+      --accent: #ff0055;
+      --success: #00ff9d;
+      --warning: #ffb800;
+      --text-main: #ffffff;
+      --text-muted: #8f90a6;
+      --glass-border: 1px solid rgba(255, 255, 255, 0.08);
+      --neon-glow: 0 0 10px rgba(0, 243, 255, 0.5);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-dark);
+      background-image: radial-gradient(circle at 15% 50%, rgba(188, 19, 254, 0.08), transparent 25%),
+                        radial-gradient(circle at 85% 30%, rgba(0, 243, 255, 0.08), transparent 25%);
+      color: var(--text-main);
+      min-height: 100vh;
+    }
+
+    h1, h2, h3, h4, h5, h6 { font-family: 'Outfit', sans-serif; }
+
+    .app-container { display: flex; min-height: 100vh; }
+
+    .sidebar {
+      width: 280px;
+      background: rgba(15, 15, 26, 0.8);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-right: var(--glass-border);
+      padding: 30px 20px;
+      position: fixed;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo { display: flex; align-items: center; gap: 15px; margin-bottom: 50px; }
+    .logo-icon {
+      width: 48px; height: 48px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+      padding: 2px; box-shadow: var(--neon-glow);
+    }
+    .logo-text h1 {
+      font-size: 1.5rem; font-weight: 700;
+      background: linear-gradient(to right, #fff, var(--primary));
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .admin-profile {
+      display: flex; align-items: center; gap: 12px; padding: 15px;
+      background: rgba(255, 255, 255, 0.03); border-radius: 12px; margin-bottom: 30px;
+    }
+    .admin-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--primary); color: #000;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1.2rem;
+    }
+
+    .nav-menu { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+    .nav-item {
+      padding: 12px 15px; border-radius: 10px; cursor: pointer;
+      display: flex; align-items: center; gap: 12px;
+      color: var(--text-muted); transition: all 0.3s;
+      text-decoration: none;
+    }
+    .nav-item:hover { background: rgba(255, 255, 255, 0.05); color: var(--text-main); }
+    .nav-item.active {
+      background: linear-gradient(90deg, rgba(0, 243, 255, 0.1), transparent);
+      color: var(--primary); border-left: 3px solid var(--primary);
+    }
+
+    .logout-btn {
+      margin-top: auto; padding: 12px 15px; border-radius: 10px;
+      cursor: pointer; display: flex; align-items: center; gap: 12px;
+      color: var(--accent); background: rgba(255, 0, 85, 0.05);
+      border: 1px solid rgba(255, 0, 85, 0.1);
+    }
+
+    .main-content { flex: 1; margin-left: 280px; padding: 40px; }
+
+    .header { display: flex; justify-content: space-between; margin-bottom: 40px; }
+    .icon-btn {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--bg-card); border: var(--glass-border);
+      color: var(--text-main); display: flex;
+      align-items: center; justify-content: center; cursor: pointer;
+    }
+
+    .card {
+      background: var(--bg-card); backdrop-filter: blur(10px);
+      border: var(--glass-border); border-radius: 20px; padding: 30px;
+      margin-bottom: 30px;
+    }
+
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; margin-bottom: 8px; color: var(--text-muted); }
+    .form-control {
+      width: 100%; padding: 12px 15px;
+      background: rgba(0, 0, 0, 0.3); border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px; color: var(--text-main); font-family: 'Inter', sans-serif;
+    }
+    .form-control:focus { outline: none; border-color: var(--primary); }
+
+    .btn {
+      padding: 12px 24px; border-radius: 10px; border: none;
+      cursor: pointer; font-weight: 600; font-family: 'Outfit', sans-serif;
+      display: inline-flex; align-items: center; gap: 8px; transition: all 0.3s;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--secondary), var(--primary));
+      color: #fff; box-shadow: var(--neon-glow);
+    }
+    .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+    .btn-danger { background: rgba(255, 0, 85, 0.1); color: var(--accent); border: 1px solid var(--accent); }
+
+    .test-case-item {
+      background: rgba(255, 255, 255, 0.03);
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    
+    .hidden-test-case-item {
+        background: rgba(255, 184, 0, 0.05); /* Yellow/Warning tint */
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        border: 1px solid rgba(255, 184, 0, 0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-icon"></div>
+        <div class="logo-text"><h1>AI_AITM</h1></div>
+      </div>
+
+      <div class="admin-profile">
+        <div class="admin-avatar" id="userInitial">A</div>
+        <div class="admin-info">
+          <h4 id="adminName">Admin</h4>
+          <p style="font-size: 0.75rem; color: var(--text-muted);">Administrator</p>
+        </div>
+      </div>
+
+      <ul class="nav-menu">
+        <a href="test.html" class="nav-item active">
+          <i class="fas fa-plus-circle"></i> Create Test
+        </a>
+        <a href="admin.html#view-results" class="nav-item">
+          <i class="fas fa-chart-bar"></i> View Results
+        </a>
+        <a href="admin.html#manage-tests" class="nav-item">
+          <i class="fas fa-tasks"></i> Manage Tests
+        </a>
+        <a href="admin.html#students" class="nav-item">
+          <i class="fas fa-users"></i> Students
+        </a>
+      </ul>
+
+      <button class="logout-btn" onclick="logout()">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </aside>
+
+    <main class="main-content">
+      <header class="header">
+        <div class="welcome-text">
+          <button onclick="window.history.back()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:1.1rem; display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+            <i class="fas fa-arrow-left"></i> Back
+          </button>
+          <h2>Create Speed Coding Test</h2>
+          <p style="color: var(--text-muted);">Setup a new speed coding challenge.</p>
+        </div>
+        <div style="display: flex; gap: 15px;">
+          <button class="icon-btn"><i class="fas fa-bell"></i></button>
+          <button class="icon-btn"><i class="fas fa-cog"></i></button>
+        </div>
+      </header>
+
+      <form id="createSpeedCodingForm">
+        <div class="card">
+          <h3 style="margin-bottom: 20px; color: var(--primary);">Basic Information</h3>
+          
+          <div class="form-group">
+            <label>Challenge Title</label>
+            <input type="text" id="testTitle" class="form-control" placeholder="e.g., Quick Sort Algorithm Challenge" required>
+          </div>
+          
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+              <label>Topic / Subject</label>
+              <input type="text" id="testSubject" class="form-control" placeholder="e.g., Algorithms" required>
+            </div>
+            <!-- Removed Year -->
+            <div class="form-group">
+              <label>Difficulty</label>
+              <select id="difficulty" class="form-control">
+                <option value="Easy">Easy</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="Hard">Hard</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px;">
+            <div class="form-group">
+              <label>Date</label>
+              <input type="date" id="testDate" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Time</label>
+              <input type="time" id="testTime" class="form-control" required>
+            </div>
+             <!-- Removed Duration -->
+            <div class="form-group">
+              <label>Benchmark Time (Seconds)</label>
+              <input type="number" id="benchmarkTime" class="form-control" placeholder="0.5" step="0.01" required>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="margin-bottom: 20px; color: var(--primary);">Problem Details</h3>
+
+          <div class="form-group">
+            <label>Problem Statement</label>
+            <textarea id="problemStatement" class="form-control" rows="6" placeholder="Describe the coding problem here..." required></textarea>
+          </div>
+
+          <div class="form-group">
+             <label>Example (Input / Output)</label>
+             <textarea id="problemExample" class="form-control" rows="4" placeholder="Input: nums = [2,7,11,15], target = 9&#10;Output: [0,1]"></textarea>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h3 style="color: var(--primary);">Public Test Cases</h3>
+            <button type="button" class="btn btn-outline" onclick="addTestCase()">
+              <i class="fas fa-plus"></i> Add Test Case
+            </button>
+          </div>
+          
+          <div id="testCasesContainer">
+            <!-- Test cases will be added here -->
+          </div>
+          <p id="noTestCasesMsg" style="color:var(--text-muted); text-align:center;">Click "Add Test Case" to add visible validation cases.</p>
+        </div>
+        
+        <div class="card" style="border-color: rgba(255, 184, 0, 0.2);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <h3 style="color: var(--warning);">Hidden Test Cases</h3>
+            <button type="button" class="btn btn-outline" style="border-color:var(--warning); color:var(--warning);" onclick="addHiddenTestCase()">
+              <i class="fas fa-plus"></i> Add Hidden Case
+            </button>
+          </div>
+          
+          <div id="hiddenTestCasesContainer">
+            <!-- Hidden Test cases will be added here -->
+          </div>
+          <p id="noHiddenTestCasesMsg" style="color:var(--text-muted); text-align:center;">Click "Add Hidden Case" to add secret evaluation cases.</p>
+        </div>
+
+        <div style="display: flex; gap: 15px; margin-top: 30px; margin-bottom: 60px;">
+          <button type="button" class="btn btn-outline" onclick="window.history.back()" style="flex:1;">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="flex: 2;">Create Speed Coding Test</button>
+        </div>
+      </form>
+
+    </main>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqqTzR-3O213c-4FSKdPiwhUHtIq1AVkA",
+      authDomain: "aiaitm.firebaseapp.com",
+      databaseURL: "https://aiaitm-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "aiaitm",
+      storageBucket: "aiaitm.firebasestorage.app",
+      messagingSenderId: "47087388427",
+      appId: "1:47087388427:web:0fd32ed6d59b4a001dc40e"
+    };
+
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+    let currentUser = null;
+    let testCases = [];
+    let hiddenTestCases = [];
+
+    // Auth check
+    auth.onAuthStateChanged(async (user) => {
+      if (user) {
+        const adminDoc = await db.collection('admins').doc(user.uid).get();
+        if (adminDoc.exists) {
+          currentUser = user;
+          document.getElementById('adminName').textContent = adminDoc.data().name || 'Admin';
+          document.getElementById('userInitial').textContent = (adminDoc.data().name || 'A').charAt(0).toUpperCase();
+        } else {
+          window.location.href = 'index.html';
+        }
+      } else {
+        window.location.href = 'index.html';
+      }
+    });
+
+    // Public Test Case Management
+    function addTestCase() {
+      const id = Date.now();
+      testCases.push({ id, input: '', output: '' });
+      renderTestCases();
+    }
+
+    function removeTestCase(id) {
+      testCases = testCases.filter(tc => tc.id !== id);
+      renderTestCases();
+    }
+
+    function updateTestCase(id, field, value) {
+      const tc = testCases.find(tc => tc.id === id);
+      if (tc) tc[field] = value;
+    }
+
+    function renderTestCases() {
+      const container = document.getElementById('testCasesContainer');
+      const msg = document.getElementById('noTestCasesMsg');
+
+      if (testCases.length === 0) {
+        msg.style.display = 'block';
+        container.innerHTML = '';
+        return;
+      }
+
+      msg.style.display = 'none';
+      container.innerHTML = '';
+
+      testCases.forEach((tc, index) => {
+        const div = document.createElement('div');
+        div.className = 'test-case-item';
+        div.innerHTML = `
+          <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+            <h4 style="color:var(--text-muted);">Test Case #${index + 1}</h4>
+            <button type="button" class="btn-danger" style="padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="removeTestCase(${tc.id})">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+            <div>
+              <label style="color:var(--text-muted); font-size:0.8rem; margin-bottom:5px; display:block;">Input</label>
+              <textarea class="form-control" rows="2" placeholder="Input values..." onchange="updateTestCase(${tc.id}, 'input', this.value)">${tc.input}</textarea>
+            </div>
+            <div>
+              <label style="color:var(--text-muted); font-size:0.8rem; margin-bottom:5px; display:block;">Expected Output</label>
+              <textarea class="form-control" rows="2" placeholder="Expected result..." onchange="updateTestCase(${tc.id}, 'output', this.value)">${tc.output}</textarea>
+            </div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Hidden Test Case Management
+    function addHiddenTestCase() {
+      const id = Date.now() + Math.random(); // ensure unique
+      hiddenTestCases.push({ id, input: '', output: '' });
+      renderHiddenTestCases();
+    }
+
+    function removeHiddenTestCase(id) {
+      hiddenTestCases = hiddenTestCases.filter(tc => tc.id !== id);
+      renderHiddenTestCases();
+    }
+
+    function updateHiddenTestCase(id, field, value) {
+      const tc = hiddenTestCases.find(tc => tc.id === id);
+      if (tc) tc[field] = value;
+    }
+
+    function renderHiddenTestCases() {
+      const container = document.getElementById('hiddenTestCasesContainer');
+      const msg = document.getElementById('noHiddenTestCasesMsg');
+
+      if (hiddenTestCases.length === 0) {
+        msg.style.display = 'block';
+        container.innerHTML = '';
+        return;
+      }
+
+      msg.style.display = 'none';
+      container.innerHTML = '';
+
+      hiddenTestCases.forEach((tc, index) => {
+        const div = document.createElement('div');
+        div.className = 'hidden-test-case-item';
+        div.innerHTML = `
+          <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+            <h4 style="color:var(--warning);">Hidden Case #${index + 1}</h4>
+            <button type="button" class="btn-danger" style="padding:5px 10px; border-radius:5px; cursor:pointer;" onclick="removeHiddenTestCase(${tc.id})">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+            <div>
+              <label style="color:var(--text-muted); font-size:0.8rem; margin-bottom:5px; display:block;">Input</label>
+              <textarea class="form-control" rows="2" placeholder="Input values..." onchange="updateHiddenTestCase(${tc.id}, 'input', this.value)">${tc.input}</textarea>
+            </div>
+            <div>
+              <label style="color:var(--text-muted); font-size:0.8rem; margin-bottom:5px; display:block;">Expected Output</label>
+              <textarea class="form-control" rows="2" placeholder="Expected result..." onchange="updateHiddenTestCase(${tc.id}, 'output', this.value)">${tc.output}</textarea>
+            </div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Add initial test cases
+    addTestCase();
+    addHiddenTestCase();
+
+    document.getElementById('createSpeedCodingForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const validTestCases = testCases.filter(tc => tc.input.trim() !== '' && tc.output.trim() !== '').map(tc => ({
+        input: tc.input,
+        output: tc.output
+      }));
+
+      const validHiddenTestCases = hiddenTestCases.filter(tc => tc.input.trim() !== '' && tc.output.trim() !== '').map(tc => ({
+        input: tc.input,
+        output: tc.output
+      }));
+
+      if (validTestCases.length === 0) {
+          alert('Please add at least one public test case.');
+          return;
+      }
+
+      const testData = {
+        type: 'Speed Coding',
+        title: document.getElementById('testTitle').value,
+        subject: document.getElementById('testSubject').value,
+        // Removed year and duration from data
+        date: document.getElementById('testDate').value,
+        time: document.getElementById('testTime').value,
+        benchmarkTime: parseFloat(document.getElementById('benchmarkTime').value),
+        difficulty: document.getElementById('difficulty').value,
+        problemStatement: document.getElementById('problemStatement').value,
+        example: document.getElementById('problemExample').value,
+        testCases: validTestCases,
+        hiddenTestCases: validHiddenTestCases,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        createdBy: currentUser.uid,
+        status: 'scheduled'
+      };
+      
+      try {
+        await db.collection('tests').add(testData);
+        confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+        alert('Speed Coding Test created successfully!');
+        window.location.href = 'admin.html';
+      } catch (error) {
+        alert('Error creating test: ' + error.message);
+      }
+    });
+
+    function logout() {
+      auth.signOut().then(() => window.location.href = 'index.html');
+    }
+  </script>
+</body>
+</html>

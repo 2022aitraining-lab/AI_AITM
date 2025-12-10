@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Anish Inamadar | Web Developer & AI Enthusiast</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700;900&display=swap" rel="stylesheet">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  
+  <style>
+    :root {
+      --bg: #080808;
+      --text: #ffffff;
+      --accent: #fff;
+      --gray: #888;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: #444; border-radius: 10px; }
+
+    /* Canvas Background */
+    #three-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      opacity: 0.4;
+    }
+
+    /* Navigation */
+    nav {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 30px 50px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      mix-blend-mode: difference;
+    }
+
+    .logo {
+      font-weight: 900;
+      font-size: 1.2rem;
+      letter-spacing: 2px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 40px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #fff;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+    }
+
+    .nav-links a:hover { opacity: 1; }
+
+    .back-btn {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 0.9rem;
+        letter-spacing: 2px;
+        border-bottom: 2px solid #fff;
+        padding-bottom: 5px;
+    }
+
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 5%;
+      perspective: 1000px;
+    }
+
+    .hero-content {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 50px;
+      width: 100%;
+      max-width: 1400px;
+    }
+
+    .profile-blob-container {
+      flex: 1;
+      display: flex;
+      justify-content: flex-end;
+      position: relative;
+    }
+
+    .profile-blob {
+      width: 450px;
+      height: 550px;
+      border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%;
+      overflow: hidden;
+      position: relative;
+      animation: morph 10s ease-in-out infinite;
+    }
+
+    @keyframes morph {
+        0%, 100% { border-radius: 40% 60% 70% 30% / 40% 50% 60% 50%; }
+        34% { border-radius: 70% 30% 50% 50% / 30% 30% 70% 70%; }
+        67% { border-radius: 100% 60% 60% 100% / 100% 100% 60% 60%; }
+    }
+
+    .profile-blob img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(1.1);
+    }
+
+    .text-content {
+      flex: 1.2;
+      z-index: 2;
+    }
+
+    .hero-line {
+        overflow: hidden;
+        margin-bottom: 5px;
+    }
+
+    h1 {
+      font-size: 7.5rem;
+      font-weight: 900;
+      line-height: 0.9;
+      letter-spacing: -2px;
+      margin-bottom: 20px;
+    }
+    
+    h1 span {
+        display: block;
+        transform-origin: bottom left;
+        will-change: transform, opacity;
+    }
+
+    h1 .outline {
+      color: transparent;
+      -webkit-text-stroke: 2px #fff;
+      opacity: 0.3;
+    }
+
+    .subtitle {
+      font-size: 1.2rem;
+      color: var(--gray);
+      letter-spacing: 5px;
+      font-weight: 400;
+      margin-bottom: 40px;
+      text-transform: uppercase;
+    }
+
+    .number-deco {
+      position: absolute;
+      bottom: 50px;
+      left: 50px;
+      font-size: 8rem;
+      font-weight: 900;
+      color: rgba(255,255,255,0.03);
+      line-height: 1;
+    }
+
+    .content-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 150px 20px;
+        perspective: 1000px;
+    }
+    
+    .section-head {
+        font-size: 5rem;
+        font-weight: 900;
+        margin-bottom: 60px;
+        text-transform: uppercase;
+        color: transparent;
+        -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+        position: relative;
+        line-height: 0.8;
+    }
+    
+    .section-head-inner {
+        color: #fff;
+        font-size: 2.5rem;
+        letter-spacing: 2px;
+        display: block;
+        transform: translateY(-30px);
+        margin-left: 5px;
+        opacity: 0.9;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 60px;
+    }
+    
+    .item-card {
+        border-top: 1px solid #333;
+        padding-top: 30px;
+        transition: transform 0.3s;
+        will-change: transform;
+    }
+    
+    .item-num {
+        font-size: 0.9rem;
+        color: var(--gray);
+        margin-bottom: 20px;
+    }
+    
+    .item-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-bottom: 15px;
+        line-height: 1.1;
+    }
+    
+    .item-desc {
+        color: var(--gray);
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+    }
+    
+    .tech-stack {
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color:#fff;
+    }
+    
+    .skills-list {
+        display: flex;
+        flex-direction: column;
+        border-top: 1px solid #222;
+    }
+    
+    .skill-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 40px 0;
+        border-bottom: 1px solid #222;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+    
+    .skill-row:hover {
+        padding-left: 30px;
+        padding-right: 30px;
+        background: #fff;
+    }
+    
+    .skill-name {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #555;
+        transition: color 0.3s;
+    }
+    
+    .skill-row:hover .skill-name {
+        color: #000;
+    }
+    
+    .skill-cat {
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        color: #444;
+        transition: color 0.3s;
+    }
+    
+    .skill-row:hover .skill-cat {
+        color: #000;
+    }
+
+    .contact-sec {
+        text-align: center;
+        padding: 150px 0;
+        border-top: 1px solid #222;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .email-large {
+        font-size: 2.5rem;
+        font-weight: 900;
+        color: #fff;
+        text-decoration: none;
+        transition: all 0.5s;
+        display: inline-block;
+        word-break: break-all;
+    }
+    
+    .email-large:hover {
+        transform: scale(1.1) skewX(-10deg);
+        color: #ddd;
+    }
+    
+    .socials {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-top: 40px;
+    }
+    
+    .social-link {
+        color: #888;
+        font-size: 2rem;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .social-link:hover { 
+        color: #fff; 
+        transform: translateY(-5px);
+        background: rgba(255,255,255,0.1);
+        border-color: #fff;
+    }
+
+    @media (max-width: 900px) {
+        .hero-content { flex-direction: column-reverse; padding-top: 100px; }
+        .profile-blob { width: 300px; height: 350px; }
+        h1 { font-size: 3.5rem; text-align: center; }
+        .text-content { text-align: center; }
+        .number-deco { display: none; }
+        .section-head { font-size: 3rem; }
+        .section-head-inner { font-size: 1.5rem; transform: translateY(-15px); }
+        .skill-name { font-size: 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+    
+    <canvas id="three-canvas"></canvas>
+
+    <nav>
+        <div class="logo">
+            <a href="contributors.html" class="back-btn">← CONTRIBUTORS</a>
+        </div>
+        <div class="nav-links">
+            <a href="#about">About</a>
+            <a href="#projects">Portfolio</a>
+            <a href="#contact">Contact</a>
+        </div>
+    </nav>
+
+    <div style="position: fixed; right: 30px; top: 50%; transform: translateY(-50%); height: 200px; width: 2px; background: rgba(255,255,255,0.1); z-index: 50;">
+        <div id="scroll-bar" style="width: 100%; height: 0%; background: #fff;"></div>
+    </div>
+
+    <header class="hero">
+        <div class="number-deco parallax" data-speed="0.2">01</div>
+        <div class="hero-content">
+            <div class="profile-blob-container parallax" data-speed="-0.1">
+                <div class="profile-blob">
+                    <img src="anish.jpg" alt="Anish Tanaji Inamadar">
+                </div>
+            </div>
+            <div class="text-content">
+                <h1>
+                    <span class="hero-text-reveal">INNOVATOR</span>
+                    <span class="hero-text-reveal outline">DEVELOPER</span>
+                    <span class="hero-text-reveal">ANISH.</span>
+                </h1>
+                <div class="subtitle hero-fade">Web • AI • Hackathon Winner</div>
+            </div>
+        </div>
+    </header>
+
+    <div class="content-container" id="about">
+        <div class="grid">
+            <div style="grid-column: span 2;" class="reveal-text">
+                <p style="font-size: 1.8rem; line-height: 1.4; font-weight: 300; color: #ccc;">
+                    I build intelligent systems where <b style="color:#fff">Web Development</b> meets <b style="color:#fff">Artificial Intelligence</b>.
+                    As a final-year B.E. student and Head Coordinator of AI & DS at AITM, I’ve led teams, won national hackathons, and developed real-world AI solutions.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-container" id="projects">
+        <div class="section-head reveal-line">WORKS <span class="section-head-inner">SELECTED PROJECTS</span></div>
+        <div class="grid">
+            <div class="item-card scroll-tilt">
+                <div class="item-num">01</div>
+                <div class="item-title">SlidesGen.AI</div>
+                <div class="item-desc">AI-powered tool that converts text input into professional presentation slides using NLP and automation.</div>
+                <div class="tech-stack">Python / AI / NLP</div>
+            </div>
+            <div class="item-card scroll-tilt">
+                <div class="item-num">02</div>
+                <div class="item-title">Kannada Voice Chatbot</div>
+                <div class="item-desc">Voice-enabled AI assistant supporting native Kannada for local accessibility and digital inclusion.</div>
+                <div class="tech-stack">AI / Voice Recognition</div>
+            </div>
+            <div class="item-card scroll-tilt">
+                <div class="item-num">03</div>
+                <div class="item-title">AI_Chotu Retail Assistant</div>
+                <div class="item-desc">Intelligent system for retail inventory and customer query management with real-time responses.</div>
+                <div class="tech-stack">ML / Automation</div>
+            </div>
+            <div class="item-card scroll-tilt">
+                <div class="item-num">04</div>
+                <div class="item-title">Vencer 2025 Website</div>
+                <div class="item-desc">Official college fest portal with event schedule, registration, and sponsor sections using Firebase.</div>
+                <div class="tech-stack">HTML / CSS / Firebase</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-container" id="skills">
+        <div class="section-head reveal-line">STACK <span class="section-head-inner">EXPERTISE</span></div>
+        <div class="skills-list">
+            <div class="skill-row reveal-row">
+                <div class="skill-name">Web Development</div>
+                <div class="skill-cat">Frontend & Backend</div>
+            </div>
+            <div class="skill-row reveal-row">
+                <div class="skill-name">Artificial Intelligence</div>
+                <div class="skill-cat">Core Logic</div>
+            </div>
+            <div class="skill-row reveal-row">
+                <div class="skill-name">Chatbot Systems</div>
+                <div class="skill-cat">NLP & Voice</div>
+            </div>
+            <div class="skill-row reveal-row">
+                <div class="skill-name">Data & AI</div>
+                <div class="skill-cat">Analytics</div>
+            </div>
+            <div class="skill-row reveal-row">
+                <div class="skill-name">Cybersecurity</div>
+                <div class="skill-cat">System Integrity</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-container" id="contact">
+        <div class="contact-sec">
+            <div style="margin-bottom: 2rem; color: #888; letter-spacing: 2px;">GET IN TOUCH</div>
+            <a href="mailto:anishinamadar11111@gmail.com" class="email-large">anishinamadar11111@gmail.com</a>
+            
+            <div class="socials">
+                <a href="https://www.linkedin.com/in/anish-inamadar-858461303?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app" class="social-link" title="LinkedIn" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://github.com/IKnowU27735300" class="social-link" title="GitHub" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="https://iknowu27735300.github.io/RESUME/" class="social-link" title="Portfolio" target="_blank"><i class="fas fa-desktop"></i></a>
+            </div>
+            
+            <div style="margin-top: 50px; color: #444; font-size: 0.8rem;">
+                &copy; 2025 ANISH TANAJI INAMADAR. ALL RIGHTS RESERVED.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger);
+
+        const scene = new THREE.Scene();
+        scene.fog = new THREE.Fog(0x080808, 10, 50);
+
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-canvas'), alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const geometry = new THREE.PlaneGeometry(100, 100, 40, 40);
+        const count = geometry.attributes.position.count;
+        const simplex = new SimplexNoise();
+        
+        for (let i = 0; i < count; i++) {
+            const x = geometry.attributes.position.getX(i);
+            const y = geometry.attributes.position.getY(i);
+            const z = simplex.noise2D(x * 0.1, y * 0.1) * 5;
+            geometry.attributes.position.setZ(i, z);
+        }
+        geometry.computeVertexNormals();
+
+        const material = new THREE.MeshBasicMaterial({ 
+            color: 0x444444, 
+            wireframe: true,
+            transparent: true,
+            opacity: 0.3 
+        });
+        
+        const terrain = new THREE.Mesh(geometry, material);
+        terrain.rotation.x = -Math.PI / 2;
+        scene.add(terrain);
+
+        camera.position.set(0, 10, 10);
+        camera.lookAt(0, 0, 0);
+
+        gsap.to(terrain.position, {
+            z: 20,
+            ease: "none",
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 1
+            }
+        });
+        
+        gsap.from(".hero-text-reveal", {
+            y: 100,
+            rotationX: 90,
+            opacity: 0,
+            transformOrigin: "bottom left",
+            duration: 1.5,
+            stagger: 0.2,
+            ease: "power4.out"
+        });
+        
+        gsap.from(".hero-fade", { opacity: 0, delay: 1, duration: 1 });
+        
+        gsap.utils.toArray(".parallax").forEach(layer => {
+            const speed = layer.getAttribute('data-speed');
+            gsap.to(layer, {
+                y: (i, target) => ScrollTrigger.maxScroll(window) * speed,
+                ease: "none",
+                scrollTrigger: {
+                    trigger: "body",
+                    start: "top top",
+                    end: "bottom bottom",
+                    scrub: 0
+                }
+            });
+        });
+
+        gsap.to("#scroll-bar", {
+            height: "100%",
+            ease: "none",
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: 0
+            }
+        });
+
+        gsap.utils.toArray(".item-card").forEach((card, i) => {
+            gsap.from(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 90%"
+                },
+                y: 100,
+                opacity: 0,
+                rotationX: 20,
+                duration: 1,
+                ease: "power3.out"
+            });
+        });
+        
+        gsap.utils.toArray(".reveal-line").forEach(head => {
+            gsap.from(head, {
+                scrollTrigger: {
+                    trigger: head,
+                    start: "top 85%"
+                },
+                x: -50,
+                opacity: 0,
+                duration: 1
+            });
+        });
+
+        function animate() {
+            requestAnimationFrame(animate);
+            terrain.rotation.z += 0.0002;
+            renderer.render(scene, camera);
+        }
+        animate();
+        
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+    </script>
+</body>
+</html>
