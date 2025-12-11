@@ -57,7 +57,7 @@
       width: 100%;
       height: 100%;
       z-index: -1;
-      opacity: 0.6;
+      opacity: 0.8;
     }
 
     .container {
@@ -477,7 +477,7 @@
 
     // --- Three.js Background with 3D Model Logic ---
     const scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0x050505, 0.02); // Add fog for depth
+    scene.fog = new THREE.FogExp2(0x050505, 0.01); // Add fog for depth
 
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-canvas'), alpha: true, antialias: true });
@@ -487,13 +487,13 @@
     // Create a ""Neural Core"" (Icosahedron Wireframe)
     const geometry = new THREE.IcosahedronGeometry(10, 2);
     const wireframe = new THREE.WireframeGeometry(geometry);
-    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x00f260, transparent: true, opacity: 0.15 });
+    const lineMaterial = new THREE.LineBasicMaterial({ color: 0x00f260, transparent: true, opacity: 0.4 });
     const sphere = new THREE.LineSegments(wireframe, lineMaterial);
     scene.add(sphere);
 
     // Inner Core
     const coreGeo = new THREE.IcosahedronGeometry(4, 0);
-    const coreMat = new THREE.MeshBasicMaterial({ color: 0x0575E6, wireframe: true, transparent: true, opacity: 0.5 });
+    const coreMat = new THREE.MeshBasicMaterial({ color: 0x0575E6, wireframe: true, transparent: true, opacity: 0.8 });
     const core = new THREE.Mesh(coreGeo, coreMat);
     scene.add(core);
 
